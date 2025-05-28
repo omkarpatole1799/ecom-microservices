@@ -12,8 +12,8 @@ import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
       type: 'postgres',
       host: 'localhost',
       port: 5433, // Different port than product service
-      username: 'dev',
-      password: 'dev123',
+      username: 'postgres',
+      password: 'postgres',
       database: 'customer_db',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
