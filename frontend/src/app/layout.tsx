@@ -5,9 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from '@/contexts/AuthContext';
-import dynamic from 'next/dynamic';
-
-const Header = dynamic(() => import('@/components/Header'), { ssr: false });
+import { CartProvider } from '@/contexts/CartContext';
+import Header from '@/components/Header';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,9 +15,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
             <body className={inter.className}>
                 <AuthProvider>
-                    <Header />
-                    <main className="min-h-screen bg-gray-50 py-6">{children}</main>
-                    <ToastContainer />
+                    <CartProvider>
+                        <Header />
+                        <main className="min-h-screen bg-gray-50 py-6">{children}</main>
+                        <ToastContainer />
+                    </CartProvider>
                 </AuthProvider>
             </body>
         </html>

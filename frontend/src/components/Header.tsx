@@ -1,10 +1,17 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { useCart } from '@/contexts/CartContext';
+import { FiShoppingCart } from 'react-icons/fi';
 import Link from 'next/link';
 
 function Header() {
     const { user, logout, isAuthenticated } = useAuth();
+    const {
+        state: { items },
+    } = useCart();
+
+    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
     return (
         <header className="bg-white shadow-md">
@@ -15,9 +22,23 @@ function Header() {
                             E-Commerce Store
                         </Link>
                     </div>
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-6">
+                        <Link href="/cart" className="relative text-gray-600 hover:text-gray-800">
+                            <FiShoppingCart size={24} />
+                            {totalItems > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {totalItems}
+                                </span>
+                            )}
+                        </Link>
+
                         {isAuthenticated ? (
                             <>
+                                <Link
+                                    href="/orders"
+                                    className="text-gray-700 hover:text-indigo-600 transition-colors">
+                                    Orders
+                                </Link>
                                 <span className="text-gray-700">Welcome, {user?.name}</span>
                                 <button
                                     onClick={logout}

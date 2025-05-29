@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
 import { RabbitOrdersMQModule } from './rabbitmq/rabbitmq-orders.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RabbitOrdersMQModule } from './rabbitmq/rabbitmq-orders.module';
     RabbitOrdersMQModule,
     ProductsModule,
     OrdersModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

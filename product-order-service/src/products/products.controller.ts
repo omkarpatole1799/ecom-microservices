@@ -27,6 +27,7 @@ export class ProductsController {
 
   @Get()
   async findAllProducts(): Promise<Product[]> {
+    console.log('findAllProducts');
     return this.productService.findAll();
   }
 

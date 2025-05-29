@@ -6,6 +6,6 @@ export interface Product {
     stock: number;
     image?: string;
     isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 }
