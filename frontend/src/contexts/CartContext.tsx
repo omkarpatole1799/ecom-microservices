@@ -235,21 +235,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
         dispatch({ type: 'SET_LOADING', payload: true });
         try {
-            // First validate the cart
-            const validateResponse = await fetch(`${PRODUCT_SERVICE_URL}/cart/validate/${user.id}`);
-            if (!validateResponse.ok) {
-                const error = await validateResponse.json();
-                throw new Error(error.message || 'Cart validation failed');
-            }
-
             // Create order
-            const response = await fetch('${PRODUCT_SERVICE_URL}/orders', {
+            const response = await fetch(`${PRODUCT_SERVICE_URL}/orders`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userId: user.id,
+                    customerId: user.id,
                     items: state.items.map((item) => ({
                         productId: item.productId,
                         quantity: item.quantity,
