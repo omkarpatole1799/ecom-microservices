@@ -1,9 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Customer } from './entities/customer.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCustomerDto } from './dtos/create-customer.dto';
 import { UpdateCustomerDto } from './dtos/update-customer.dto';
+import { LoginDto } from './dtos/login.dto';
+import * as bcrypt from 'bcrypt';
+import { generateToken } from '../helpers/jwt.helper';
 
 @Injectable()
 export class CustomersService {
@@ -15,9 +22,14 @@ export class CustomersService {
   async createCustomer(
     createCustomerDto: CreateCustomerDto,
   ): Promise<Customer> {
-    const customer = this.customerRepository.create(createCustomerDto);
+    const hashedPassword = await bcrypt.hash(createCustomerDto.password, 10);
+    const customer = this.customerRepository.create({
+      ...createCustomerDto,
+      password: hashedPassword,
+    });
     await this.customerRepository.save(customer);
-    return customer;
+    const { password, ...result } = customer;
+    return result as Customer;
   }
 
   async getAllCustomers(): Promise<Customer[]> {
@@ -46,5 +58,35 @@ export class CustomersService {
     if (result.affected === 0) {
       throw new NotFoundException(`Customer not found`);
     }
+  }
+
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ customer: Omit<Customer, 'password'>; token: string }> {
+    const customer = await this.customerRepository.findOne({
+      where: { email: loginDto.email },
+      select: ['id', 'email', 'password', 'name'],
+    });
+
+    if (!customer) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      customer.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const { password, ...customerData } = customer;
+    const token = generateToken(customerData);
+
+    return {
+      customer: customerData,
+      token,
+    };
   }
 }

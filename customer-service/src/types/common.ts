@@ -4,3 +4,9 @@ export interface ApiResponse<T> {
   data?: T;
   errMsg?: string;
 }
+
+export interface JwtPayloadInterface {
+  id: string | undefined;
+  email: string | undefined;
+  name: string | undefined;
+}
