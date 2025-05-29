@@ -1,14 +1,17 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
-import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
+import { ProductsModule } from './products/products.module';
+import { RabbitOrdersMQModule } from './rabbitmq/rabbitmq-orders.module';
 
 @Module({
   imports: [
-    RabbitMQModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -19,6 +22,7 @@ import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    RabbitOrdersMQModule,
     ProductsModule,
     OrdersModule,
   ],

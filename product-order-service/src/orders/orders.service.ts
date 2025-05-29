@@ -1,19 +1,25 @@
 import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
   BadRequestException,
+  ConflictException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Order } from './order.entity';
-import { OrderItem } from './order-item.entity';
-import { Product } from 'src/products/products.entity';
+import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ORDERS_SERVICE_RMQ } from 'src/helpers/constants';
+import { Product } from 'src/products/products.entity';
+import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from './dto/update-order-status.dto';
+import { OrderItem } from './entities/order-item.entity';
+import { Order } from './entities/order.entity';
 
 @Injectable()
 export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name);
+
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
@@ -23,6 +29,8 @@ export class OrdersService {
 
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+
+    @Inject(ORDERS_SERVICE_RMQ) private readonly client: ClientProxy,
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
@@ -31,7 +39,7 @@ export class OrdersService {
     // initial status is pending
     order.status = OrderStatus.PENDING;
 
-    // Calculate total amount and create order items
+    // calculate total amount and create order items
     let totalAmount = 0;
     const items = await Promise.all(
       createOrderDto.items.map(async (item) => {
@@ -55,7 +63,7 @@ export class OrdersService {
 
         totalAmount += product.price * item.quantity;
 
-        // Decrease product stock
+        // decrease product stock
         product.stock -= item.quantity;
         await this.productRepository.save(product);
 
@@ -68,7 +76,12 @@ export class OrdersService {
     order.totalAmount = totalAmount;
     order.items = items;
 
-    return await this.orderRepository.save(order);
+    const savedOrder = await this.orderRepository.save(order);
+
+    // publish order created event
+    this.client.emit('order.created', savedOrder);
+
+    return savedOrder;
   }
 
   async getAllOrders(): Promise<Order[]> {
