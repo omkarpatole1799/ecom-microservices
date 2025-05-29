@@ -46,6 +46,7 @@ export class CartController {
     );
   }
 
+  // This will remove the item from cart
   @Delete(':id/:productId')
   async removeFromCart(
     @Param('id') userId: string,
@@ -57,10 +58,5 @@ export class CartController {
   @Delete(':id')
   async clearCart(@Param('id') userId: string) {
     return this.cartService.clearCart(userId);
-  }
-
-  @Get('validate/:id')
-  async validateCart(@Param('id') userId: string) {
-    return this.cartService.validateCartItems(userId);
   }
 }

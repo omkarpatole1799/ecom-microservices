@@ -156,38 +156,4 @@ export class CartService {
     await this.cartItemRepository.delete({ userId });
     return [];
   }
-
-  async validateCartItems(userId: string) {
-    const cartItems = await this.cartItemRepository.find({
-      where: { userId },
-      relations: ['product'],
-    });
-
-    const validationResults = await Promise.all(
-      cartItems.map(async (item) => {
-        if (!item.product) {
-          return {
-            valid: false,
-            message: `Product not found: ${item.productId}`,
-          };
-        }
-        if (item.product.stock < item.quantity) {
-          return {
-            valid: false,
-            message: `Only ${item.product.stock} items available for product: ${item.product.name}`,
-          };
-        }
-        return { valid: true };
-      }),
-    );
-
-    const invalidItems = validationResults.filter((result) => !result.valid);
-    if (invalidItems.length > 0) {
-      throw new BadRequestException(
-        invalidItems.map((item) => item.message).join(', '),
-      );
-    }
-
-    return true;
-  }
 }
