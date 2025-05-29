@@ -49,7 +49,7 @@ export default function RegistrationForm() {
         setServerError(null);
 
         try {
-            const response = await fetch(`${CUSTOMER_SERVICE_URL}/customers`, {
+            const response = await fetch(`${CUSTOMER_SERVICE_URL}/customers/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,6 +83,7 @@ export default function RegistrationForm() {
                 router.push('/login');
             }, 3000);
         } catch (error) {
+            console.log(error, '--error');
             const errorMessage = error instanceof Error ? error.message : 'Registration failed';
             toast.error(errorMessage, {
                 position: 'top-right',
