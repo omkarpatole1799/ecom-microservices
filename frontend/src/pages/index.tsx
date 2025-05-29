@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Product } from '@/types/product';
-import { ProductCard } from '@/components/ProductCard';
+'use client';
+import ProductCard from '@/components/ProductCard';
 import { useCart } from '@/contexts/CartContext';
+import { Product } from '@/types/product';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -13,8 +14,6 @@ export default function Home() {
         fetchProducts();
     }, []);
 
-    console.log(products,'--products')
-
     const fetchProducts = async () => {
         try {
             const response = await fetch('http://localhost:3001/products');
@@ -22,7 +21,7 @@ export default function Home() {
                 throw new Error('Failed to fetch products');
             }
             const data = await response.json();
-            console.log(data,'--data')
+            console.log(data, '--data');
             setProducts(data);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to fetch products');
@@ -58,9 +57,14 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-8">Our Products</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {products?.length > 0 && products.map((product) => (
-                    <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
-                ))}
+                {products?.length > 0 &&
+                    products.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            onAddToCart={handleAddToCart}
+                        />
+                    ))}
             </div>
         </div>
     );

@@ -7,7 +7,7 @@ interface ProductCardProps {
     onAddToCart: (product: Product) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
+export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
     const [imageError, setImageError] = useState(false);
 
     const fallbackImageUrl =
@@ -15,7 +15,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
 
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-3">
-
             <div className="relative h-48 w-full p-3">
                 <Image
                     src={imageError ? fallbackImageUrl : product.image || fallbackImageUrl}
@@ -26,18 +25,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
                     priority
                 />
             </div>
-                <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
-                <p className="text-sm text-gray-600 mt-1">{product.description}</p>
-                <div className="mt-4 flex items-center justify-between">
-                    <span className="text-xl font-bold text-gray-900">${product.price}</span>
-                    <span className="text-sm text-gray-600">Stock: {product.stock}</span>
-                </div>
-                <button
-                    onClick={() => onAddToCart(product)}
-                    disabled={product.stock === 0}
-                    className="mt-auto w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
-                    {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                </button>
+            <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
+            <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+            <div className="mt-4 flex items-center justify-between">
+                <span className="text-xl font-bold text-gray-900">${product.price}</span>
+                <span className="text-sm text-gray-600">Stock: {product.stock}</span>
+            </div>
+            <button
+                onClick={() => onAddToCart(product)}
+                disabled={product.stock === 0}
+                className="mt-auto w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
+                {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+            </button>
         </div>
     );
-};
+}
