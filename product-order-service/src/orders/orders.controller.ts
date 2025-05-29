@@ -18,9 +18,9 @@ export class OrdersController {
     return successResponse(order, 'Successfully placed new order');
   }
 
-  @Get()
-  async getAllOrders(): Promise<ApiResponse<Order[]>> {
-    const orders = await this.ordersService.getAllOrders();
+  @Get(':id')
+  async getAllOrders(@Param('id') id: string): Promise<ApiResponse<Order[]>> {
+    const orders = await this.ordersService.getAllOrders(id);
     return successResponse(orders, 'Successfully retrieved all orders');
   }
 

@@ -84,9 +84,11 @@ export class OrdersService {
     return savedOrder;
   }
 
-  async getAllOrders(): Promise<Order[]> {
+  async getAllOrders(id: string): Promise<Order[]> {
     return this.orderRepository.find({
-      relations: ['items'],
+      where: { customerId: id },
+      relations: ['items', 'items.product'],
+      order: { createdAt: 'DESC' },
     });
   }
 
