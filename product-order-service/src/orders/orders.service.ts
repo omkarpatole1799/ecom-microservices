@@ -8,7 +8,11 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ORDERS_SERVICE_RMQ } from 'src/helpers/constants';
+import {
+  ORDER_CREATED,
+  ORDER_UPDATED,
+  ORDERS_SERVICE_RMQ,
+} from 'src/helpers/constants';
 import { Product } from 'src/products/products.entity';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -81,8 +85,26 @@ export class OrdersService {
 
     const savedOrder = await this.orderRepository.save(order);
 
+    const {
+      id,
+      customerId,
+      totalAmount: orderTotal,
+      address,
+      name,
+      phone,
+      status,
+    } = savedOrder;
+
     // publish order created event
-    this.client.emit('order.created', savedOrder);
+    this.client.emit(ORDER_CREATED, {
+      id,
+      customerId,
+      totalAmount: orderTotal,
+      address,
+      phone,
+      name,
+      status,
+    });
 
     return savedOrder;
   }
@@ -129,7 +151,15 @@ export class OrdersService {
     }
 
     order.status = status;
-    return this.orderRepository.save(order);
+    await this.orderRepository.save(order);
+
+    // emit the event to update order status
+    this.client.emit(ORDER_UPDATED, {
+      orderId: id,
+      status,
+    });
+
+    return order;
   }
 
   async cancelOrder(id: string): Promise<Order> {

@@ -4,9 +4,10 @@ import { CustomersController } from './customers.controller';
 import { CustomersService } from './customers.service';
 import { Customer } from './entities/customer.entity';
 import { AuthMiddleware } from '../middleware/auth.middleware';
+import { Order } from './entities/order.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Customer])],
+  imports: [TypeOrmModule.forFeature([Customer, Order])],
   controllers: [CustomersController],
   providers: [CustomersService],
 })
