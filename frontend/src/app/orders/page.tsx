@@ -23,6 +23,9 @@ interface Order {
     status: string;
     createdAt: string;
     product: Product;
+    name: string;
+    address: string;
+    phone: string;
 }
 
 export default function OrdersPage() {
@@ -108,6 +111,24 @@ export default function OrdersPage() {
                                         {order.status?.toUpperCase()}
                                     </span>
                                 </div>
+
+                                <div className="border-t border-gray-200 py-4">
+                                    <h3 className="font-medium mb-2">Order Info:</h3>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between items-center">
+                                            <div>
+                                                <p className="font-medium">Name : {order.name}</p>
+                                                <p className="text-sm text-gray-600">
+                                                    Address : {order.name}
+                                                </p>
+                                                <p className="text-sm text-gray-600">
+                                                    Phone: {order.phone}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div className="border-t border-gray-200 pt-4">
                                     <h3 className="font-medium mb-2">Items:</h3>
                                     <div className="space-y-2">

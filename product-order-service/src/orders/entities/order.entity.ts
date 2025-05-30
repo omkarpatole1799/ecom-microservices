@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { OrderItem } from './order-item.entity';
+import { IsNotEmpty } from 'class-validator';
 
 @Entity('orders')
 export class Order {
@@ -17,6 +18,16 @@ export class Order {
 
   @OneToMany(() => OrderItem, (item) => item.order, { cascade: true })
   items: OrderItem[];
+
+  @Column({ default: '-' })
+  @IsNotEmpty()
+  address: string;
+
+  @Column({ default: '-' })
+  name: string;
+
+  @Column({ default: '-' })
+  phone: string;
 
   @Column({
     type: 'timestamp',

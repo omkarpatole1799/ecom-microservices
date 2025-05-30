@@ -6,10 +6,10 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import { FiTrash2 } from 'react-icons/fi';
+import OrderSummary from '@/components/OrderSummary';
 
 export default function CartPage() {
-    const { state, removeFromCart, updateQuantity, checkout, fetchCart } = useCart();
-    const { isAuthenticated } = useAuth();
+    const { state, removeFromCart, updateQuantity, fetchCart } = useCart();
     const router = useRouter();
 
     useEffect(() => {
@@ -106,18 +106,10 @@ export default function CartPage() {
                 <div className="lg:col-span-1">
                     <div className="bg-white rounded-lg shadow p-6 sticky top-4">
                         <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
-                        <div className="space-y-2 mb-4">
-                            <div className="flex justify-between text-gray-600">
-                                <span>Subtotal</span>
-                                <span>${total.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between font-semibold text-gray-900 text-lg pt-2 border-t">
-                                <span>Total</span>
-                                <span>${total.toFixed(2)}</span>
-                            </div>
-                        </div>
+
+                        <OrderSummary />
                         <button
-                            onClick={checkout}
+                            onClick={() => router.push('/checkout')}
                             className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors">
                             Proceed to Checkout
                         </button>

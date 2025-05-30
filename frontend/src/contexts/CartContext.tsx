@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { PRODUCT_SERVICE_URL } from '@/helpers/constants';
 import { Product } from '@/types/product';
+import { CheckoutType } from '@/app/checkout/page';
 
 // Types
 interface CartItem {
@@ -38,7 +39,7 @@ interface CartContextType {
     removeFromCart: (productId: string) => Promise<void>;
     updateQuantity: (productId: string, quantity: number, type: string) => Promise<void>;
     clearCart: () => Promise<void>;
-    checkout: () => Promise<void>;
+    checkout: (data: CheckoutType) => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -226,7 +227,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const checkout = async () => {
+    const checkout = async (checkoutData: CheckoutType) => {
         if (!user) {
             toast.error('Please login to checkout');
             router.push('/login');
@@ -247,6 +248,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
                         productId: item.productId,
                         quantity: item.quantity,
                     })),
+                    address: checkoutData.address,
+                    name: checkoutData.name,
+                    phone: checkoutData.phone,
                 }),
             });
 

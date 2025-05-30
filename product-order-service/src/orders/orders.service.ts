@@ -36,6 +36,9 @@ export class OrdersService {
   async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
     const order = new Order();
     order.customerId = createOrderDto.customerId;
+    order.name = createOrderDto.name;
+    order.address = createOrderDto.address;
+    order.phone = createOrderDto.phone;
     // initial status is pending
     order.status = OrderStatus.PENDING;
 
