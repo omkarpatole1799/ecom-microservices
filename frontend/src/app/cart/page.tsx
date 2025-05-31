@@ -3,22 +3,22 @@
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { FiTrash2 } from 'react-icons/fi';
 import OrderSummary from '@/components/OrderSummary';
+import { fallbackImageUrl } from '@/helpers/constants';
 
 export default function CartPage() {
     const { state, removeFromCart, updateQuantity, fetchCart } = useCart();
     const router = useRouter();
+    const [imageError, setImageError] = useState<boolean>(false);
 
     useEffect(() => {
         fetchCart();
     }, []);
 
     const { items, loading } = state;
-    console.log(items, '--items');
-    const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
     if (loading) {
         return (
@@ -58,10 +58,16 @@ export default function CartPage() {
                             className="flex items-center gap-4 p-4 bg-white rounded-lg shadow">
                             <div className="relative h-24 w-24 flex-shrink-0">
                                 <Image
-                                    src={item.image || '/placeholder.png'}
+                                    src={
+                                        imageError
+                                            ? fallbackImageUrl
+                                            : item.image || fallbackImageUrl
+                                    }
                                     alt={item.product.name}
                                     fill
-                                    className="object-cover rounded"
+                                    className="object-cover"
+                                    onError={() => setImageError(true)}
+                                    priority
                                 />
                             </div>
                             <div className="flex-grow">
