@@ -1,13 +1,12 @@
 'use client';
 
+import OrderSummary from '@/components/OrderSummary';
 import { useCart } from '@/contexts/CartContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { fallbackImageUrl } from '@/helpers/constants';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { FiTrash2 } from 'react-icons/fi';
-import OrderSummary from '@/components/OrderSummary';
-import { fallbackImageUrl } from '@/helpers/constants';
 
 export default function CartPage() {
     const { state, removeFromCart, updateQuantity, fetchCart } = useCart();

@@ -1,11 +1,8 @@
 'use client';
 
 import OrderSummary from '@/components/OrderSummary';
-import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { z } from 'zod';
@@ -19,18 +16,12 @@ const checkoutSchema = z.object({
 export type CheckoutType = z.infer<typeof checkoutSchema>;
 
 export default function CheckoutPage() {
-    const { isAuthenticated } = useAuth();
-    const router = useRouter();
-
     const { checkout } = useCart();
-
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-        reset,
     } = useForm<CheckoutType>({
         resolver: zodResolver(checkoutSchema),
     });
@@ -100,7 +91,6 @@ export default function CheckoutPage() {
 
                         <button
                             type="submit"
-                            disabled={isLoading}
                             className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-300 disabled:cursor-not-allowed">
                             Proceed to Checkout
                         </button>
