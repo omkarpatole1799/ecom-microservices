@@ -33,10 +33,18 @@ export class ProductsService {
   }
 
   async deleteProduct(id: string): Promise<void> {
+    try {
+      
     const deleteResult = await this.productRepository.delete(id);
+    
     if (deleteResult.affected === 0) {
       throw new NotFoundException('Product not found to delete');
     }
+    } catch (error) {
+      console.log(error,'error');
+      
+    }
+
   }
 
   async updateProduct(

@@ -16,7 +16,10 @@ export class Order {
   @Column({ default: 'pending' })
   status: string = 'pending';
 
-  @OneToMany(() => OrderItem, (item) => item.order, { cascade: true })
+  @OneToMany(() => OrderItem, (item) => item.order, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   items: OrderItem[];
 
   @Column({ default: '-' })

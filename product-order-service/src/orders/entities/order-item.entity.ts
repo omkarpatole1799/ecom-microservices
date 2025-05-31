@@ -10,7 +10,9 @@ export class OrderItem {
   @Column('uuid')
   productId: string;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
   @Column('int')
@@ -19,6 +21,8 @@ export class OrderItem {
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 
-  @ManyToOne(() => Order, (order) => order.items)
+  @ManyToOne(() => Order, (order) => order.items, {
+    onDelete: 'CASCADE',
+  })
   order: Order;
 }
