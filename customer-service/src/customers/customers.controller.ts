@@ -7,17 +7,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { successResponse } from 'src/helpers/response.helper';
+import { ApiResponse } from 'src/types/common';
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto } from './dtos/create-customer.dto';
-import { successResponse } from 'src/helpers/response.helper';
-import { Customer } from './entities/customer.entity';
-import { ApiResponse } from 'src/types/common';
-import { UpdateCustomerDto } from './dtos/update-customer.dto';
 import { LoginDto } from './dtos/login.dto';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { ORDER_CREATED, ORDER_UPDATED } from 'src/helpers/constants';
-import { CreateOrderDto } from './dtos/create-order.dto';
-import { UpdateOrderDto } from './dtos/update-order.dto';
+import { UpdateCustomerDto } from './dtos/update-customer.dto';
+import { Customer } from './entities/customer.entity';
 
 @Controller('customers')
 export class CustomersController {
@@ -74,18 +70,5 @@ export class CustomersController {
     return successResponse(null, 'Successfully deleted customer');
   }
 
-  // orders related
-  @MessagePattern(ORDER_CREATED)
-  async handleOrderCreated(@Payload() order: CreateOrderDto): Promise<void> {
-    console.log('Order is crated');
-    console.log(order, 'created');
-    await this.customerService.orderCreated(order);
-  }
-
-  @MessagePattern(ORDER_UPDATED)
-  async handleOrderUpdated(@Payload() order: UpdateOrderDto): Promise<void> {
-    console.log('Order is crated');
-    console.log(order, 'created');
-    await this.customerService.orderUpdated(order);
-  }
+  
 }

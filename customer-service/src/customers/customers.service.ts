@@ -3,26 +3,20 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Customer } from './entities/customer.entity';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateCustomerDto } from './dtos/create-customer.dto';
-import { UpdateCustomerDto } from './dtos/update-customer.dto';
-import { LoginDto } from './dtos/login.dto';
 import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
 import { generateToken } from '../helpers/jwt.helper';
-import { Order } from './entities/order.entity';
-import { CreateOrderDto } from './dtos/create-order.dto';
-import { UpdateOrderDto } from './dtos/update-order.dto';
+import { CreateCustomerDto } from './dtos/create-customer.dto';
+import { LoginDto } from './dtos/login.dto';
+import { UpdateCustomerDto } from './dtos/update-customer.dto';
+import { Customer } from './entities/customer.entity';
 
 @Injectable()
 export class CustomersService {
   constructor(
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
-
-    @InjectRepository(Order)
-    private readonly orderRepository: Repository<Order>,
   ) {}
 
   async createCustomer(
@@ -94,24 +88,5 @@ export class CustomersService {
       customer: customerData,
       token,
     };
-  }
-
-  // orders related
-  async orderCreated(order: CreateOrderDto): Promise<Order> {
-    const _order = this.orderRepository.create(order);
-    const createdOrder = await this.orderRepository.save(_order);
-
-    return createdOrder;
-  }
-
-  async orderUpdated(order: UpdateOrderDto): Promise<void> {
-    const { status, orderId } = order;
-    const _findOrder = await this.orderRepository.findOneBy({ id: orderId });
-    if (!_findOrder) {
-      throw new NotFoundException('Order not found');
-    }
-
-    _findOrder.status = status;
-    await this.orderRepository.save(_findOrder);
   }
 }

@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomersModule } from './customers/customers.module';
 import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
+import { OrdersController } from './orders/orders.controller';
+import { OrdersService } from './orders/orders.service';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -19,8 +22,9 @@ import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
       synchronize: true,
     }),
     CustomersModule,
+    OrdersModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, OrdersController],
+  providers: [AppService, OrdersService],
 })
 export class AppModule {}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { PRODUCT_SERVICE_URL } from '@/helpers/constants';
+import { CUSTOMER_SERVICE_URL } from '@/helpers/constants';
 import { toast } from 'react-toastify';
 import { Product } from '@/types/product';
 import { MdOutlineContentCopy } from 'react-icons/md';
@@ -41,11 +41,11 @@ export default function OrdersPage() {
 
     const fetchOrders = async () => {
         try {
-            const response = await fetch(`${PRODUCT_SERVICE_URL}/orders/${user?.id}`);
+            const response = await fetch(`${CUSTOMER_SERVICE_URL}/orders/${user?.id}`);
             if (!response.ok) throw new Error('Failed to fetch orders');
             const data = await response.json();
-            console.log(data.data, '--data');
-            setOrders(data.data);
+            console.log(data, '--data');
+            setOrders(data);
         } catch (error) {
             toast.error('Failed to fetch orders');
             console.error('Error fetching orders:', error);
@@ -129,28 +129,6 @@ export default function OrdersPage() {
                                     </div>
                                 </div>
 
-                                <div className="border-t border-gray-200 pt-4">
-                                    <h3 className="font-medium mb-2">Items:</h3>
-                                    <div className="space-y-2">
-                                        {order.items.map((item) => (
-                                            <div
-                                                key={item.id}
-                                                className="flex justify-between items-center">
-                                                <div>
-                                                    <p className="font-medium">
-                                                        {item.product.name}
-                                                    </p>
-                                                    <p className="text-sm text-gray-600">
-                                                        Quantity: {item.quantity}
-                                                    </p>
-                                                </div>
-                                                <p className="font-medium">
-                                                    ${item.price * item.quantity}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
                                 <div className="border-t border-gray-200 mt-4 pt-4">
                                     <div className="flex justify-between items-center">
                                         <span className="font-semibold">Total:</span>

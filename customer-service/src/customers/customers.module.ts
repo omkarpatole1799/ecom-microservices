@@ -1,13 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthMiddleware } from '../middleware/auth.middleware';
 import { CustomersController } from './customers.controller';
 import { CustomersService } from './customers.service';
 import { Customer } from './entities/customer.entity';
-import { AuthMiddleware } from '../middleware/auth.middleware';
-import { Order } from './entities/order.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Customer, Order])],
+  imports: [TypeOrmModule.forFeature([Customer])],
   controllers: [CustomersController],
   providers: [CustomersService],
 })
